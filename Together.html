@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" type="image/png" href="images/1024.png" />
+<link rel="apple-touch-icon" href="images/1024.png" />
+<title>Together — built for two</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<meta property="og:title" content="Together — built for two" />
+<meta property="og:description" content="A quiet app that lives between two phones. No followers, no feed, no strangers — just the shared rhythm of one relationship." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://thetogetherapp.app/images/og-default.png" />
+<meta property="og:url" content="https://thetogetherapp.app" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Together — built for two" />
+<meta name="twitter:description" content="A quiet app that lives between two phones. No followers, no feed, no strangers — just the shared rhythm of one relationship." />
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    --bg: #0c0709;
+    --bg-2: #14090e;
+    --ink: #f4ebe9;
+    --ink-dim: #c9b9bd;
+    --ink-mute: #8a787e;
+    --line: rgba(244, 235, 233, 0.08);
+    --line-2: rgba(244, 235, 233, 0.14);
+    --rose: #ff7aa8;
+    --rose-soft: #ffb1ca;
+    --plum: #b46cff;
+    --warm-amber: #ffb98a;
+    --grad: linear-gradient(135deg, #ff7aa8 0%, #c97bff 55%, #8a6bff 100%);
+    --grad-soft: linear-gradient(135deg, rgba(255, 122, 168, 0.18), rgba(180, 108, 255, 0.18));
+    --card: rgba(255, 255, 255, 0.025);
+    --card-hover: rgba(255, 255, 255, 0.045);
+    --radius: 18px;
+    --radius-sm: 10px;
+    --max: 1180px;
+    --serif: "Instrument Serif", "Cormorant", Georgia, serif;
+    --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "ss02", "cv11";
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  /* Grain + ambient glows on the whole page */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60vw 60vw at 18% -10%, rgba(255, 122, 168, 0.18), transparent 60%),
+      radial-gradient(50vw 50vw at 110% 20%, rgba(180, 108, 255, 0.16), transparent 60%),
+      radial-gradient(70vw 50vw at 50% 110%, rgba(120, 80, 200, 0.12), transparent 60%);
+    z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    z-index: 1;
+  }
+
+  main, header, footer { position: relative; z-index: 2; }
+
+  ::selection { background: rgba(255, 122, 168, 0.35); color: #fff; }
+
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+  /* ---------- Layout ---------- */
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Header ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: linear-gradient(to bottom, rgba(12, 7, 9, 0.7), rgba(12, 7, 9, 0.35));
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    font-size: 17px;
+  }
+  .brand-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--grad);
+    box-shadow: 0 0 22px rgba(255, 122, 168, 0.55), inset 0 0 10px rgba(255, 255, 255, 0.25);
+    position: relative;
+  }
+  .brand-dot::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
+  }
+  .brand-mark { font-family: var(--sans); }
+  .brand-mark em { font-family: var(--serif); font-style: italic; font-weight: 400; }
+
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--ink-dim); }
+  .nav-links a { transition: color .2s ease; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a.active { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .nav-links { gap: 18px; font-size: 13px; }
+  }
+
+  /* ---------- Typography ---------- */
+  h1, h2, h3, h4 { margin: 0; font-weight: 500; letter-spacing: -0.02em; }
+  h1 .it, h2 .it, h3 .it, p .it { font-family: var(--serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 18px; height: 1px;
+    background: linear-gradient(to right, transparent, var(--rose-soft));
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #150510;
+    background: var(--grad);
+    background-size: 200% 200%;
+    box-shadow:
+      0 18px 60px -18px rgba(255, 122, 168, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    transition: transform .25s ease, box-shadow .25s ease, background-position .6s ease;
+    will-change: transform;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    background-position: 100% 0%;
+    box-shadow:
+      0 26px 70px -16px rgba(255, 122, 168, 0.7),
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  }
+  .btn:active { transform: translateY(0); }
+  .btn .apple {
+    width: 18px; height: 18px;
+    display: inline-grid; place-items: center;
+  }
+  .btn .label-sub {
+    font-size: 10px;
+    line-height: 1;
+    opacity: 0.7;
+    letter-spacing: 0.04em;
+    margin-bottom: 3px;
+    display: block;
+  }
+  .btn .label-main { font-size: 15px; line-height: 1; font-weight: 600; letter-spacing: -0.01em; display: block; }
+
+  .btn-ghost {
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line-2);
+    padding: 13px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .btn-ghost:hover {
+    background: var(--card-hover);
+    border-color: rgba(244, 235, 233, 0.25);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: 76px 0 60px;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 64px;
+    align-items: center;
+  }
+  .hero h1 {
+    font-size: clamp(54px, 9vw, 116px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    margin: 24px 0 22px;
+  }
+  .hero h1 .gradtext {
+    background: linear-gradient(120deg, #ffd2e1 0%, #ff7aa8 35%, #c97bff 70%, #8a6bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+  }
+  .hero p.lede {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 460px;
+    margin: 0 0 36px;
+  }
+  .hero p.lede .it { font-size: 22px; color: var(--ink); }
+
+  .cta-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .cta-meta {
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-mute); display: inline-block; }
+
+  @media (max-width: 880px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .hero { padding: 48px 0 40px; }
+  }
+
+  /* ---------- Phone mockup ---------- */
+  .phone-stage {
+    position: relative;
+    aspect-ratio: 5 / 6;
+    display: grid;
+    place-items: center;
+  }
+  .phone-stage::before {
+    content: "";
+    position: absolute;
+    inset: -8%;
+    background:
+      radial-gradient(closest-side, rgba(255, 122, 168, 0.35), transparent 70%),
+      radial-gradient(closest-side at 70% 60%, rgba(180, 108, 255, 0.35), transparent 70%);
+    filter: blur(30px);
+    z-index: 0;
+    animation: pulseGlow 6s ease-in-out infinite alternate;
+  }
+  @keyframes pulseGlow {
+    from { opacity: 0.7; transform: scale(0.98); }
+    to   { opacity: 1;   transform: scale(1.04); }
+  }
+
+  .phone {
+    position: relative;
+    width: min(320px, 75%);
+    aspect-ratio: 9 / 19.5;
+    background: #0a0608;
+    border-radius: 46px;
+    padding: 10px;
+    box-shadow:
+      0 60px 120px -30px rgba(0, 0, 0, 0.7),
+      0 0 0 1.5px rgba(244, 235, 233, 0.08),
+      0 0 0 9px #1c0e14,
+      0 0 0 10px rgba(244, 235, 233, 0.07),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    z-index: 1;
+    animation: floatPhone 7s ease-in-out infinite;
+  }
+  @keyframes floatPhone {
+    0%, 100% { transform: translateY(0) rotate(-1.4deg); }
+    50%      { transform: translateY(-10px) rotate(-0.6deg); }
+  }
+  .phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    background:
+      radial-gradient(80% 50% at 50% 0%, rgba(255, 122, 168, 0.55), transparent 70%),
+      radial-gradient(90% 60% at 80% 100%, rgba(180, 108, 255, 0.55), transparent 70%),
+      linear-gradient(180deg, #2a0d1c 0%, #1a0815 50%, #15101f 100%);
+    color: #fff;
+    font-size: 11px;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 9px; left: 50%;
+    transform: translateX(-50%);
+    width: 96px; height: 26px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 4;
+  }
+  .phone-time {
+    position: absolute;
+    top: 14px; left: 22px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    z-index: 5;
+  }
+  .phone-sig {
+    position: absolute;
+    top: 16px; right: 22px;
+    z-index: 5;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    opacity: 0.95;
+  }
+  .phone-sig svg { width: auto; height: 11px; }
+
+  .phone-content {
+    position: absolute;
+    inset: 50px 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .phone-h {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .phone-h .title { font-family: var(--serif); font-style: italic; font-size: 22px; letter-spacing: -0.01em; }
+  .phone-h .title b { font-family: var(--sans); font-weight: 500; font-style: normal; }
+  .phone-h .menu {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    display: grid; place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .phone-h .menu::before {
+    content: ""; width: 12px; height: 1px; background: #fff;
+    box-shadow: 0 -3px #fff, 0 3px #fff;
+  }
+
+  .paired {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 10px 12px;
+  }
+  .av {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7aa8, #c97bff);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
+  .av.two { background: linear-gradient(135deg, #ffb98a, #ff7aa8); margin-left: -10px; }
+  .paired .who { font-size: 11px; line-height: 1.2; }
+  .paired .who small { color: rgba(255, 255, 255, 0.55); font-size: 9px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .paired .heart {
+    margin-left: auto;
+    color: #ff7aa8;
+    font-size: 13px;
+  }
+
+  /* Vinyl card */
+  .vinyl-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .vinyl {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, #ff7aa8 0 8px, #1a0a12 9px 12px, #2a121c 13px 16px, #1a0a12 17px 21px, #2a121c 22px 26px, #1a0a12 27px 31px, #2a121c 32px 50%);
+    position: relative;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 6px 20px -6px rgba(0, 0, 0, 0.7);
+    animation: spin 8s linear infinite;
+    flex: 0 0 auto;
+  }
+  .vinyl::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.18) 0%, transparent 40%);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .now-playing { font-size: 10px; flex: 1; min-width: 0; }
+  .now-playing .lab { color: rgba(255, 255, 255, 0.5); letter-spacing: 0.1em; text-transform: uppercase; font-size: 8.5px; }
+  .now-playing .song { font-weight: 500; font-size: 11.5px; margin: 2px 0 1px; }
+  .now-playing .art { color: rgba(255, 255, 255, 0.6); font-size: 10px; }
+  .now-playing .bar { margin-top: 6px; height: 2px; background: rgba(255, 255, 255, 0.12); border-radius: 2px; overflow: hidden; }
+  .now-playing .bar span { display: block; height: 100%; width: 42%; background: linear-gradient(90deg, #ff7aa8, #c97bff); border-radius: 2px; }
+
+  /* Neon date card */
+  .neon-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    background:
+      radial-gradient(70% 70% at 50% 0%, rgba(255, 122, 168, 0.35), transparent 70%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 122, 168, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .neon-card .neon-h {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.1;
+    text-shadow: 0 0 12px rgba(255, 122, 168, 0.7);
+    color: #ffd2e1;
+  }
+  .neon-card .neon-s {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 4px;
+  }
+  .neon-card .pill {
+    margin-top: 10px;
+    display: inline-block;
+    font-size: 9px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(255, 122, 168, 0.18);
+    border: 1px solid rgba(255, 122, 168, 0.45);
+    color: #ffd2e1;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 10px;
+  }
+
+  .mini-list {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 12px;
+  }
+  .mini-list .ml-h {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 8px;
+  }
+  .mini-list ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .mini-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .mini-list li .chk {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    flex: 0 0 auto;
+    position: relative;
+  }
+  .mini-list li.done .chk {
+    background: linear-gradient(135deg, #ff7aa8, #c97bff);
+    border-color: transparent;
+  }
+  .mini-list li.done .chk::after {
+    content: "";
+    position: absolute;
+    left: 3px; top: 1px;
+    width: 4px; height: 7px;
+    border-right: 1.5px solid #fff; border-bottom: 1.5px solid #fff;
+    transform: rotate(45deg);
+  }
+  .mini-list li.done { color: rgba(255, 255, 255, 0.45); text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.25); }
+
+  /* ---------- About / Features ---------- */
+  section { position: relative; padding: 110px 0; }
+  @media (max-width: 880px) { section { padding: 80px 0; } }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 48px;
+    align-items: end;
+    margin-bottom: 64px;
+  }
+  .section-head h2 {
+    font-size: clamp(34px, 4.4vw, 56px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .section-head p {
+    color: var(--ink-dim);
+    font-size: 17px;
+    max-width: 520px;
+    margin: 0;
+  }
+  @media (max-width: 880px) {
+    .section-head { grid-template-columns: 1fr; gap: 22px; margin-bottom: 40px; }
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 880px) { .features { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .features { grid-template-columns: 1fr; } }
+
+  .f-card {
+    position: relative;
+    padding: 26px 22px 28px;
+    border-radius: 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    transition: background .25s ease, transform .25s ease, border-color .25s ease;
+    overflow: hidden;
+  }
+  .f-card:hover {
+    background: var(--card-hover);
+    transform: translateY(-3px);
+    border-color: var(--line-2);
+  }
+  .f-card::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: var(--grad);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity .25s ease;
+    filter: blur(20px);
+  }
+  .f-card:hover::before { opacity: 0.25; }
+
+  .f-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--grad-soft);
+    border: 1px solid rgba(255, 122, 168, 0.22);
+    margin-bottom: 28px;
+    color: #ffd2e1;
+  }
+  .f-icon svg { width: 22px; height: 22px; }
+  .f-card h3 { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .f-card p { margin: 0; color: var(--ink-dim); font-size: 13.5px; line-height: 1.5; }
+
+  /* ---------- Screenshots row ---------- */
+  .shots {
+    padding: 60px 0 100px;
+  }
+  .shots .section-head { margin-bottom: 56px; }
+
+  .shots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  /* Mobile: horizontal scroll-snap row */
+  @media (max-width: 880px) {
+    .shots-grid {
+      display: flex;
+      grid-template-columns: none;
+      gap: 22px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 28px 24px;
+      margin: 0 -28px;
+      scrollbar-width: none;
+    }
+    .shots-grid::-webkit-scrollbar { display: none; }
+    .shots-grid .shot {
+      flex: 0 0 64%;
+      max-width: 260px;
+      scroll-snap-align: center;
+    }
+    .shots-grid .shot:first-child { margin-left: 4%; }
+    .shots-grid .shot:last-child  { margin-right: 4%; }
+  }
+
+  .shot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .shot .phone {
+    /* Smaller, static variant of the hero phone */
+    width: 100%;
+    max-width: 240px;
+    animation: none;
+    transform: none;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+    will-change: transform;
+  }
+  .shot:hover .phone {
+    transform: translateY(-6px);
+    box-shadow:
+      0 70px 130px -30px rgba(0, 0, 0, 0.75),
+      0 0 0 1.5px rgba(244, 235, 233, 0.1),
+      0 0 0 9px #1c0e14,
+      0 0 0 10px rgba(244, 235, 233, 0.08),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+  .shot-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 36px;
+    overflow: hidden;
+    color: #fff;
+  }
+  /* Per-screen gradient placeholders — each tab gets its own mood */
+  .shot-screen.s-status {
+    background:
+      radial-gradient(90% 60% at 50% 0%, rgba(255, 122, 168, 0.7), transparent 65%),
+      radial-gradient(80% 60% at 80% 100%, rgba(180, 108, 255, 0.55), transparent 70%),
+      linear-gradient(180deg, #2a0d1c 0%, #1a0815 55%, #15101f 100%);
+  }
+  .shot-screen.s-calendar {
+    background:
+      radial-gradient(80% 50% at 20% 0%, rgba(255, 185, 138, 0.55), transparent 65%),
+      radial-gradient(90% 60% at 100% 80%, rgba(255, 122, 168, 0.55), transparent 70%),
+      linear-gradient(180deg, #2a121b 0%, #1a0b16 55%, #160e1d 100%);
+  }
+  .shot-screen.s-lists {
+    background:
+      radial-gradient(90% 60% at 50% 0%, rgba(180, 108, 255, 0.6), transparent 65%),
+      radial-gradient(80% 50% at 50% 100%, rgba(120, 90, 220, 0.55), transparent 70%),
+      linear-gradient(180deg, #1a0d24 0%, #150b1f 55%, #120a1c 100%);
+  }
+  .shot-screen.s-food {
+    background:
+      radial-gradient(80% 60% at 30% 0%, rgba(255, 122, 168, 0.65), transparent 65%),
+      radial-gradient(90% 60% at 70% 100%, rgba(255, 185, 138, 0.55), transparent 70%),
+      linear-gradient(180deg, #2a1018 0%, #1d0c14 55%, #170e1a 100%);
+  }
+  .shot-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  /* Hide <img> until a real src is swapped in — gradient stays visible */
+  .shot-img:not([src]),
+  .shot-img[src=""] { display: none; }
+
+  .shot-caption {
+    margin-top: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .shot-caption .eyebrow { font-size: 11px; }
+  .shot-caption .eyebrow::before { width: 14px; }
+  .shot-caption h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  /* ---------- Quote / Outro band ---------- */
+  .quote-band {
+    text-align: center;
+    padding: 90px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .quote-band blockquote {
+    margin: 0 auto;
+    max-width: 720px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .quote-band blockquote span {
+    background: linear-gradient(120deg, #ffb1ca 0%, #ff7aa8 50%, #c97bff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .quote-band .by {
+    margin-top: 22px;
+    color: var(--ink-mute);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- CTA strip ---------- */
+  .closing {
+    padding: 130px 0 110px;
+    text-align: center;
+  }
+  .closing h2 {
+    font-size: clamp(42px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 18px;
+  }
+  .closing p {
+    color: var(--ink-dim);
+    font-size: 17px;
+    max-width: 520px;
+    margin: 0 auto 38px;
+  }
+
+  /* ---------- Footer ---------- */
+  footer.site {
+    border-top: 1px solid var(--line);
+    padding: 40px 0 50px;
+    color: var(--ink-mute);
+    font-size: 13px;
+  }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .foot-links { display: flex; gap: 24px; }
+  .foot-links a { transition: color .2s ease; }
+  .foot-links a:hover { color: var(--ink); }
+
+  /* ---------- Generic page (privacy / contact / support) ---------- */
+  .page {
+    padding: 80px 0 120px;
+  }
+  .page-head {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 40px;
+    margin-bottom: 56px;
+  }
+  .page-head h1 {
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 18px 0 14px;
+  }
+  .page-head p.sub {
+    color: var(--ink-dim);
+    font-size: 17px;
+    max-width: 580px;
+    margin: 0;
+  }
+  .page-head p.sub .it { font-size: 19px; }
+
+  .doc {
+    display: grid;
+    grid-template-columns: 0.6fr 1.4fr;
+    gap: 64px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .doc { grid-template-columns: 1fr; gap: 32px; }
+  }
+  .toc {
+    position: sticky;
+    top: 92px;
+    font-size: 13px;
+  }
+  .toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .toc a {
+    color: var(--ink-mute);
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    transition: color .15s ease;
+  }
+  .toc a:hover { color: var(--ink-dim); }
+  .toc a span.n { font-variant-numeric: tabular-nums; opacity: 0.55; }
+
+  .doc article h2 {
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin: 48px 0 14px;
+  }
+  .doc article h2:first-child { margin-top: 0; }
+  .doc article p, .doc article ul {
+    color: var(--ink-dim);
+    font-size: 15.5px;
+    line-height: 1.65;
+    margin: 0 0 14px;
+  }
+  .doc article ul { padding-left: 1.1em; }
+  .doc article ul li { margin-bottom: 6px; }
+  .doc article a { color: var(--rose-soft); border-bottom: 1px solid rgba(255, 177, 202, 0.35); }
+  .doc article a:hover { border-bottom-color: rgba(255, 177, 202, 0.8); }
+  .doc article strong { color: var(--ink); font-weight: 500; }
+
+  .last-updated {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 6px 12px;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- Contact page ---------- */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 880px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  .contact-copy p {
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+  }
+  .contact-copy p.lead {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 22px;
+  }
+  .email-card {
+    margin-top: 20px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    padding: 24px;
+    background: var(--card);
+    transition: background .25s ease, border-color .25s ease;
+  }
+  .email-card:hover { background: var(--card-hover); border-color: rgba(244, 235, 233, 0.2); }
+  .email-card .lab {
+    color: var(--ink-mute);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .email-card a.email-link {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .email-card a.email-link:hover {
+    background: linear-gradient(120deg, #ffb1ca, #c97bff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .reply-meta {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--ink-mute);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .reply-meta .pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #6cf2a6;
+    box-shadow: 0 0 0 0 rgba(108, 242, 166, 0.5);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(108, 242, 166, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(108, 242, 166, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(108, 242, 166, 0); }
+  }
+
+  /* ---------- Forms (contact + support) ---------- */
+  .form {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 28px;
+  }
+  .form h3 {
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .form .form-sub {
+    color: var(--ink-mute);
+    font-size: 13px;
+    margin-bottom: 22px;
+  }
+  .field { margin-bottom: 16px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 540px) { .field-row { grid-template-columns: 1fr; } }
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  label span.opt { color: var(--ink-mute); margin-left: 6px; font-size: 11px; }
+  input, textarea, select {
+    width: 100%;
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--line-2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: rgba(255, 122, 168, 0.55);
+    background: rgba(255, 122, 168, 0.04);
+    box-shadow: 0 0 0 3px rgba(255, 122, 168, 0.15);
+  }
+  textarea { min-height: 130px; resize: vertical; line-height: 1.55; }
+  input.invalid, textarea.invalid { border-color: rgba(255, 100, 130, 0.6); background: rgba(255, 100, 130, 0.06); }
+  .err { color: #ff9bb4; font-size: 12px; margin-top: 6px; display: none; }
+  .err.show { display: block; }
+  .submit-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+  .form .submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    background: var(--grad);
+    color: #150510;
+    font-weight: 600;
+    font-size: 14px;
+    border: 0;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 14px 40px -16px rgba(255, 122, 168, 0.6);
+  }
+  .form .submit:hover { transform: translateY(-2px); box-shadow: 0 18px 50px -16px rgba(255, 122, 168, 0.7); }
+  .form .helper { color: var(--ink-mute); font-size: 12px; }
+
+  .sent {
+    border-radius: 14px;
+    padding: 22px 22px;
+    border: 1px solid rgba(108, 242, 166, 0.3);
+    background: linear-gradient(180deg, rgba(108, 242, 166, 0.08), rgba(108, 242, 166, 0.02));
+    display: none;
+    margin-bottom: 22px;
+  }
+  .sent.show { display: block; animation: fadeUp .5s ease; }
+  .sent h4 { font-size: 16px; margin-bottom: 4px; }
+  .sent h4 .it { font-family: var(--serif); font-style: italic; font-weight: 400; color: #c7ffd9; }
+  .sent p { color: var(--ink-dim); margin: 0; font-size: 13.5px; }
+
+  /* ---------- Support specifics ---------- */
+  .support-aside {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 22px;
+    padding: 26px;
+  }
+  .support-aside h4 {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .faq { display: flex; flex-direction: column; gap: 4px; }
+  .faq details {
+    border-top: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  .faq details:last-child { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: color .15s ease;
+  }
+  .faq summary:hover { color: var(--ink); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+";
+    color: var(--ink-mute);
+    font-size: 16px;
+    line-height: 1;
+    transition: transform .25s ease, color .15s ease;
+  }
+  .faq details[open] summary::after { content: "–"; color: var(--rose-soft); }
+  .faq p {
+    color: var(--ink-mute);
+    font-size: 13.5px;
+    margin: 10px 0 2px;
+    line-height: 1.55;
+  }
+
+  /* ---------- Anim helpers ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal.d1 { transition-delay: .08s; }
+  .reveal.d2 { transition-delay: .16s; }
+  .reveal.d3 { transition-delay: .24s; }
+  .reveal.d4 { transition-delay: .32s; }
+  .reveal.d5 { transition-delay: .40s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Route transitions */
+  main.route {
+    animation: fadeIn .5s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <a href="#/" class="brand" aria-label="Together — home">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span class="brand-mark">Together</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#/" data-route="/">Home</a>
+      <a href="#/privacy" data-route="/privacy">Privacy</a>
+      <a href="#/contact" data-route="/contact">Contact</a>
+      <a href="#/support" data-route="/support">Support</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- HOME -->
+<!-- ============================================================ -->
+<main id="route-home" class="route" data-screen-label="Home" hidden>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow reveal">A private space for two</span>
+        <h1 class="reveal d1">
+          <span class="gradtext">Together.</span><br />
+          <span class="it">for the two of you.</span>
+        </h1>
+        <p class="lede reveal d2">
+          A small, quiet app that lives between two phones. <span class="it">No followers. No feed. No strangers.</span> Just the shared rhythm of one relationship.
+        </p>
+        <div class="cta-row reveal d3">
+          <!-- TODO: replace href with real App Store URL -->
+          <a class="btn" href="#" aria-label="Download Together on the App Store">
+            <span class="apple" aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path d="M15.6 10.6c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.3-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.9-.7-1.5 0-2.9.9-3.6 2.2C2 10.5 3.2 14.7 5 17c.8 1.1 1.8 2.4 3.1 2.3 1.2 0 1.7-.8 3.2-.8s2 .8 3.2.8c1.3 0 2.2-1.1 3-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.5-1-2.5-3.7zm-2.4-6.8c.7-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>
+            </span>
+            <span>
+              <span class="label-sub">Download on the</span>
+              <span class="label-main">App Store</span>
+            </span>
+          </a>
+          <a href="#about" class="btn-ghost">What it is</a>
+        </div>
+        <div class="cta-meta reveal d4">
+          <span>iOS 16 and later</span>
+          <span class="dot-sep"></span>
+          <span>Apple Sign In</span>
+          <span class="dot-sep"></span>
+          <span>End-to-end private</span>
+        </div>
+      </div>
+
+      <!-- iPhone mockup -->
+      <div class="phone-stage reveal d2" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-screen" style="background:#0e0918;">
+            <img class="shot-img" src="images/DateNightPage.png" alt="Date Night feature screenshot" style="z-index:10;" />
+            <div class="phone-notch" style="display:none;"></div>
+            <div class="phone-time" style="display:none;">9:41</div>
+            <div class="phone-sig" style="display:none;">
+              <svg viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="5" y="5" width="3" height="7" rx="0.5"/><rect x="10" y="2" width="3" height="10" rx="0.5"/><rect x="15" y="0" width="3" height="12" rx="0.5" opacity=".5"/></svg>
+              <svg viewBox="0 0 14 10" fill="none" stroke="#fff" stroke-width="1.2"><path d="M1 4c1.7-1.7 4-3 6-3s4.3 1.3 6 3"/><path d="M3 6c1-1 2.4-1.8 4-1.8s3 .8 4 1.8"/><circle cx="7" cy="8.5" r="1" fill="#fff"/></svg>
+              <svg viewBox="0 0 26 12" fill="none" stroke="#fff" stroke-width="1"><rect x="0.5" y="0.5" width="22" height="11" rx="2.5"/><rect x="2.5" y="2.5" width="16" height="7" rx="1" fill="#fff"/><path d="M24 4v4" stroke-width="1.5"/></svg>
+            </div>
+            <div class="phone-content" style="display:none;">
+
+              <div class="phone-h">
+                <div class="title"><b>Together</b><br/><span style="font-size: 12px; opacity:0.7;">— hi, you two.</span></div>
+                <div class="menu" aria-hidden="true"></div>
+              </div>
+
+              <div class="paired">
+                <div style="display:flex; align-items:center;">
+                  <div class="av"></div>
+                  <div class="av two"></div>
+                </div>
+                <div class="who">
+                  <small>Together since</small>
+                  <div>March 14, 2023</div>
+                </div>
+                <div class="heart">♥</div>
+              </div>
+
+              <div class="vinyl-card">
+                <div class="vinyl"></div>
+                <div class="now-playing">
+                  <div class="lab">Now playing — for you</div>
+                  <div class="song">Ribbon Around Your Wrist</div>
+                  <div class="art">added by Alex · 2 min ago</div>
+                  <div class="bar"><span></span></div>
+                </div>
+              </div>
+
+              <div class="neon-card">
+                <div class="neon-h">Tiny Thai place on 9th &amp;<br/>a slow walk home.</div>
+                <div class="neon-s">Tonight, 7:30 · suggested for you</div>
+                <span class="pill">Date idea</span>
+              </div>
+
+              <div class="row-2">
+                <div class="mini-list">
+                  <div class="ml-h">Our list — week of</div>
+                  <ul>
+                    <li class="done"><span class="chk"></span> book Sunday brunch</li>
+                    <li><span class="chk"></span> pick up his prescription</li>
+                    <li><span class="chk"></span> water the basil</li>
+                  </ul>
+                </div>
+                <div class="mini-list" style="background: linear-gradient(180deg, rgba(255,122,168,0.08), rgba(180,108,255,0.04));">
+                  <div class="ml-h" style="color: rgba(255, 210, 225, 0.8);">Cycle</div>
+                  <div style="font-family: var(--serif); font-style: italic; font-size: 24px; line-height: 1; color: #fff;">Day 14</div>
+                  <div style="font-size: 10px; color: rgba(255, 255, 255, 0.55); margin-top: 4px;">ovulation window</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow reveal">What it is</span>
+          <h2 class="reveal d1">A room <span class="it">only two people</span> can enter.</h2>
+        </div>
+        <p class="reveal d2">Together is built for the inside of a relationship — the small things you'd never post anywhere. A shared status. A song to send. A list for the week. The phase of the month. That's all. That's the whole app.</p>
+      </div>
+
+      <div class="features">
+        <div class="f-card reveal d1">
+          <div class="f-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3.5"/><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+            </svg>
+          </div>
+          <h3>Status</h3>
+          <p>One word, one feeling. So they know without asking.</p>
+        </div>
+        <div class="f-card reveal d2">
+          <div class="f-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><circle cx="12" cy="14" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <h3>Plans</h3>
+          <p>Anniversaries, date nights, the dentist. Quietly synced.</p>
+        </div>
+        <div class="f-card reveal d3">
+          <div class="f-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 6h11M5 12h11M5 18h7"/><path d="M19 5l1.2 1.2L22 4.5" /><path d="M19 11l1.2 1.2L22 10.5"/><circle cx="20.4" cy="18" r="1.6"/>
+            </svg>
+          </div>
+          <h3>Lists</h3>
+          <p>Groceries, films, places. Add, cross off, repeat.</p>
+        </div>
+        <div class="f-card reveal d4">
+          <div class="f-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8.5"/><path d="M12 3.5C8 7 8 17 12 20.5"/><path d="M12 3.5C16 7 16 17 12 20.5"/>
+            </svg>
+          </div>
+          <h3>Cycle</h3>
+          <p>Tracked together, gently. Phases, not surprises.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shots">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow reveal">A look inside</span>
+          <h2 class="reveal d1">Four tabs. <span class="it">Nothing else.</span></h2>
+        </div>
+        <p class="reveal d2">Together opens to one of these and stays out of your way. No tab bar full of features you'll never use — just the small handful that belong between two people.</p>
+      </div>
+
+      <div class="shots-grid" role="list">
+        <!-- 01 · Status -->
+        <div class="shot reveal d1" role="listitem">
+          <div class="phone">
+            <div class="shot-screen s-status">
+              <div class="phone-notch"></div>
+              <img class="shot-img" src="images/HomePage.PNG" alt="Status tab screenshot" />
+            </div>
+          </div>
+          <div class="shot-caption">
+            <span class="eyebrow">Tab 01</span>
+            <h3>Status</h3>
+          </div>
+        </div>
+
+        <!-- 02 · Plans -->
+        <div class="shot reveal d2" role="listitem">
+          <div class="phone">
+            <div class="shot-screen s-calendar">
+              <div class="phone-notch"></div>
+              <img class="shot-img" src="images/CalenderView.PNG" alt="Plans tab screenshot" />
+            </div>
+          </div>
+          <div class="shot-caption">
+            <span class="eyebrow">Tab 02</span>
+            <h3>Plans</h3>
+          </div>
+        </div>
+
+        <!-- 03 · Lists -->
+        <div class="shot reveal d3" role="listitem">
+          <div class="phone">
+            <div class="shot-screen s-lists">
+              <div class="phone-notch"></div>
+              <img class="shot-img" src="images/ListsPage.PNG" alt="Lists tab screenshot" />
+            </div>
+          </div>
+          <div class="shot-caption">
+            <span class="eyebrow">Tab 03</span>
+            <h3>Lists</h3>
+          </div>
+        </div>
+
+        <!-- 04 · Casino Meal -->
+        <div class="shot reveal d4" role="listitem">
+          <div class="phone">
+            <div class="shot-screen s-food">
+              <div class="phone-notch"></div>
+              <img class="shot-img" src="images/CasinoFoodDecider.PNG" alt="Casino Meal tab screenshot" />
+            </div>
+          </div>
+          <div class="shot-caption">
+            <span class="eyebrow">Tab 04</span>
+            <h3>Casino Meal</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="quote-band">
+    <div class="wrap">
+      <blockquote class="reveal">
+        Most apps want everyone.<br/>
+        <span>This one only wants you two.</span>
+      </blockquote>
+      <div class="by reveal d1">— Why we built it</div>
+    </div>
+  </div>
+
+  <section class="closing">
+    <div class="wrap">
+      <h2 class="reveal">Yours, <span class="it">and theirs.</span></h2>
+      <p class="reveal d1">Pair your phones once. Then never think about the app again — just open it when something quiet wants to be said.</p>
+      <div class="reveal d2">
+        <!-- TODO: replace href with real App Store URL -->
+        <a class="btn" href="#">
+          <span class="apple" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M15.6 10.6c0-2.2 1.8-3.3 1.9-3.4-1-1.5-2.6-1.7-3.2-1.7-1.3-.1-2.6.8-3.3.8-.7 0-1.7-.8-2.9-.7-1.5 0-2.9.9-3.6 2.2C2 10.5 3.2 14.7 5 17c.8 1.1 1.8 2.4 3.1 2.3 1.2 0 1.7-.8 3.2-.8s2 .8 3.2.8c1.3 0 2.2-1.1 3-2.3.9-1.3 1.3-2.6 1.3-2.7-.1 0-2.5-1-2.5-3.7zm-2.4-6.8c.7-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>
+          </span>
+          <span>
+            <span class="label-sub">Download on the</span>
+            <span class="label-main">App Store</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ -->
+<!-- PRIVACY -->
+<!-- ============================================================ -->
+<main id="route-privacy" class="route" data-screen-label="Privacy" hidden>
+  <section class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">Privacy</span>
+        <h1>What I hold, <span class="it">and what I don't.</span></h1>
+        <p class="sub">Built solo by Victor Rosu in British Columbia, Canada. Your data stays between you and your partner — never sold, never shared.</p>
+      </div>
+
+      <div class="doc">
+        <aside class="toc" aria-label="Sections">
+          <ol>
+            <li><a href="#p-collect"><span class="n">01</span> What I collect</a></li>
+            <li><a href="#p-who"><span class="n">02</span> Who sees it</a></li>
+            <li><a href="#p-third"><span class="n">03</span> Third parties</a></li>
+            <li><a href="#p-retention"><span class="n">04</span> Retention &amp; deletion</a></li>
+            <li><a href="#p-rights"><span class="n">05</span> Your rights</a></li>
+            <li><a href="#p-health"><span class="n">06</span> Health data</a></li>
+            <li><a href="#p-children"><span class="n">07</span> Children</a></li>
+            <li><a href="#p-changes"><span class="n">08</span> Changes</a></li>
+            <li><a href="#p-contact"><span class="n">09</span> Contact</a></li>
+          </ol>
+        </aside>
+
+        <article>
+          <p>I'm Victor Rosu, an independent developer based in British Columbia, Canada. I built Together as a side project — it's just me. If you're in BC or anywhere in Canada, your data is governed by BC's Personal Information Protection Act (PIPA) and Canada's Personal Information Protection and Electronic Documents Act (PIPEDA). If you're in the EU or UK, your relevant rights under GDPR are covered below too.</p>
+
+          <h2 id="p-collect">01 · What I collect and why</h2>
+          <p>Together needs some of your information to function. Here's exactly what, and why:</p>
+          <p><strong>Your identity.</strong> When you sign in with Apple, I receive a unique identifier tied to your Apple ID, and optionally your name if you allow it. You also choose a display name inside the app. These are used to identify you to your partner and route data correctly.</p>
+          <p><strong>Everything you put in the app.</strong> Your status messages, notes, calendar events, list items (date ideas, movies, music, wishlist, bucket list, secret notes), and food wheel choices are stored in Firebase so they sync to your partner in real time. That's the whole point of the app — none of this is collected for any other reason.</p>
+          <p><strong>Your cycle phase.</strong> If you use the cycle tracking feature, that information is stored and shared with your partner inside the app. This is health data — I treat it as sensitive. It's never used for anything beyond displaying it to your partner, and it's never shared with anyone else.</p>
+          <p><strong>Your push notification token.</strong> To send you notifications (new status, "Miss You" nudge, new list items, calendar events), your device's push token is stored in Firebase. It's not used for marketing or tracking.</p>
+          <p><strong>Timestamps.</strong> Timestamps on your content help the app figure out whose update is most recent. That's their only purpose.</p>
+          <p><strong>What I don't collect:</strong> location, contacts, browsing behaviour, advertising identifiers, or any analytics about how you use the app.</p>
+
+          <h2 id="p-who">02 · Who sees your data</h2>
+          <p>Your partner — and only your partner. The app is designed so your data is shared with exactly one other person: whoever you linked with.</p>
+          <p>As the developer, I have administrative access to Firebase for things like fixing bugs or keeping the servers running. I don't read your content. In the event of a legal obligation requiring disclosure, I would comply with applicable Canadian law, and notify you if permitted to do so.</p>
+
+          <h2 id="p-third">03 · Third-party services</h2>
+          <p><strong>Firebase (Google)</strong> handles the database, authentication, and push notification delivery. Your data lives on Google's servers under a data processing agreement that prohibits Google from using it for their own purposes. See <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase's privacy policy</a>.</p>
+          <p><strong>Apple</strong> handles Sign In with Apple and delivers push notifications through APNs. See <a href="https://www.apple.com/legal/privacy" target="_blank" rel="noopener">Apple's privacy policy</a>.</p>
+          <p>I don't use any analytics services, ad networks, or data brokers. I don't sell your data to anyone.</p>
+
+          <h2 id="p-retention">04 · Data retention and deletion</h2>
+          <p>Your data stays in the system as long as your account exists. If you delete your account through <em>Settings → Delete My Account</em>, everything is permanently deleted — your user record, your couple's shared data, and all list items. This can't be undone.</p>
+          <p>If you unlink your partner without deleting your account, the shared couple data persists until both accounts are deleted.</p>
+
+          <h2 id="p-rights">05 · Your rights</h2>
+          <p>Under BC's PIPA and Canada's PIPEDA, you have the right to know what personal information I hold about you, request corrections, and request deletion. Most of your data is visible and editable directly inside the app. For anything else, reach out to me directly.</p>
+          <p>Under GDPR (if you're in the EU or UK), you additionally have the right to data portability and the right to object to processing. You can also lodge a complaint with your local supervisory authority. Contact me first though — I'm easy to reach and happy to sort things out directly.</p>
+
+          <h2 id="p-health">06 · Health data</h2>
+          <p>Cycle phase information is treated as sensitive personal information. It's collected only with your knowledge, used only to display it to your partner within the app, and is deleted along with everything else if you delete your account. It is never disclosed to third parties.</p>
+
+          <h2 id="p-children">07 · Children</h2>
+          <p>Together is not for anyone under 13. I don't knowingly collect data from children. If you think a child has used the app and created an account, contact me and I'll remove the data immediately.</p>
+
+          <h2 id="p-changes">08 · Changes</h2>
+          <p>If I make changes to this policy that meaningfully affect how your data is used, I'll update the date at the top. For significant changes, I'll try to notify you through the app. Continued use after a change means you accept the updated policy.</p>
+
+          <h2 id="p-contact">09 · Questions or requests</h2>
+          <p>I'm a solo developer and easy to get in touch with. I'll respond to privacy requests within 30 days, as required by Canadian law.</p>
+          <ul>
+            <li>Email: <a href="mailto:support@thetogetherapp.app">support@thetogetherapp.app</a></li>
+            <li>Website: <a href="https://thetogetherapp.app">thetogetherapp.app</a></li>
+          </ul>
+
+          <span class="last-updated">Last updated · May 19, 2026</span>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ -->
+<!-- CONTACT -->
+<!-- ============================================================ -->
+<main id="route-contact" class="route" data-screen-label="Contact" hidden>
+  <section class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">Contact</span>
+        <h1>Say hello.</h1>
+        <p class="sub">Together is a tiny team. <span class="it">Your message comes straight to us</span> — no help desk, no ticket system, no canned reply.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-copy">
+          <p class="lead">Have a question, a feature wish, or something you'd just like to tell the people who made this?</p>
+          <p>The best way to reach us is over email. Write as much or as little as you like — we read everything, and we try to reply within two business days.</p>
+
+          <div class="email-card">
+            <div class="lab">Write to</div>
+            <a class="email-link" href="mailto:support@thetogetherapp.app">support@thetogetherapp.app</a>
+            <div class="reply-meta">
+              <span class="pulse" aria-hidden="true"></span>
+              <span>Replying today — typically within a day.</span>
+            </div>
+          </div>
+
+          <p style="margin-top: 28px; font-size: 14px; color: var(--ink-mute);">For bugs, crashes, or anything that's stopped working, the <a href="#/support" style="color:var(--rose-soft); border-bottom: 1px solid rgba(255,177,202,0.4);">support page</a> has a quicker form that captures the technical bits we need.</p>
+        </div>
+
+        <form class="form" id="contact-form" novalidate>
+          <h3>Or send a note from here</h3>
+          <div class="form-sub">It lands in the same inbox.</div>
+
+          <div class="sent" id="contact-sent" role="status" aria-live="polite">
+            <h4><span class="it">Sent.</span> Thank you.</h4>
+            <p>We'll write back soon — usually within a day. Keep an eye on your inbox.</p>
+          </div>
+
+          <div class="field">
+            <label for="c-name">Your name</label>
+            <input type="text" id="c-name" name="name" autocomplete="name" required />
+            <div class="err" data-for="c-name">A name (or a nickname) helps.</div>
+          </div>
+          <div class="field">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email" name="email" autocomplete="email" required />
+            <div class="err" data-for="c-email">We'll need a valid email to reply.</div>
+          </div>
+          <div class="field">
+            <label for="c-msg">What's on your mind?</label>
+            <textarea id="c-msg" name="message" placeholder="Anything at all." required></textarea>
+            <div class="err" data-for="c-msg">Say a few words?</div>
+          </div>
+          <div class="submit-row">
+            <span class="helper">We read every message ourselves.</span>
+            <button class="submit" type="submit">
+              Send
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ -->
+<!-- SUPPORT -->
+<!-- ============================================================ -->
+<main id="route-support" class="route" data-screen-label="Support" hidden>
+  <section class="page">
+    <div class="wrap">
+      <div class="page-head">
+        <span class="eyebrow">Support</span>
+        <h1>Something <span class="it">not working?</span></h1>
+        <p class="sub">Tell us what happened — even a short note helps. The more you share (device, what you tapped, what you expected), the faster we can fix it.</p>
+      </div>
+
+      <div class="contact-grid">
+        <form class="form" id="support-form" novalidate>
+          <h3>Bug report</h3>
+          <div class="form-sub">No login required. Optional fields are, well, optional.</div>
+
+          <div class="sent" id="support-sent" role="status" aria-live="polite">
+            <h4><span class="it">Got it.</span> Thank you for writing in.</h4>
+            <p>One of us will read your report and write back. If we need more detail to reproduce, we'll ask.</p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="s-name">Name</label>
+              <input type="text" id="s-name" name="name" autocomplete="name" required />
+              <div class="err" data-for="s-name">A name (or a nickname) helps.</div>
+            </div>
+            <div class="field">
+              <label for="s-email">Email</label>
+              <input type="email" id="s-email" name="email" autocomplete="email" required />
+              <div class="err" data-for="s-email">We need an email to reply.</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="s-topic">What's it about?</label>
+            <select id="s-topic" name="topic">
+              <option>Something crashed</option>
+              <option>Sync isn't working</option>
+              <option>Notifications</option>
+              <option>Pairing / accounts</option>
+              <option>Cycle tracking</option>
+              <option>Music / vinyl</option>
+              <option>Date ideas / Casino Meal</option>
+              <option>Something else</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="s-desc">What happened?</label>
+            <textarea id="s-desc" name="description" placeholder="Walk us through it. What did you tap, what did you see, and what did you expect to see instead?" required></textarea>
+            <div class="err" data-for="s-desc">A sentence or two is plenty.</div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="s-device">Device <span class="opt">optional</span></label>
+              <input type="text" id="s-device" name="device" placeholder="iPhone 15 Pro" />
+            </div>
+            <div class="field">
+              <label for="s-os">iOS version <span class="opt">optional</span></label>
+              <input type="text" id="s-os" name="os" placeholder="iOS 17.4" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Attachments <span class="opt">optional — drop a screenshot</span></label>
+            <div id="drop" style="border: 1.5px dashed var(--line-2); border-radius: 12px; padding: 18px; text-align: center; color: var(--ink-mute); font-size: 13px; cursor: pointer; transition: border-color .2s ease, background .2s ease;">
+              <div id="drop-empty"><strong style="color: var(--ink-dim); font-weight: 500;">Drop a screenshot here</strong> or click to choose</div>
+              <div id="drop-filled" style="display:none; color: var(--ink-dim);"></div>
+              <input type="file" id="s-file" accept="image/*" style="display:none;" />
+            </div>
+          </div>
+
+          <div class="submit-row">
+            <span class="helper">Friendly humans on the other end.</span>
+            <button class="submit" type="submit">
+              Send report
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </form>
+
+        <aside class="support-aside">
+          <h4>Quick answers</h4>
+          <div class="faq">
+            <details>
+              <summary>How do I pair with my partner?</summary>
+              <p>Open Together → tap the heart in the top corner → tap <em>Invite partner</em>. Send the link. They tap it on their phone. That's pairing done.</p>
+            </details>
+            <details>
+              <summary>The app isn't syncing.</summary>
+              <p>Pull-to-refresh on the home screen. If it still won't sync after a minute, sign out and back in via Apple. If that doesn't work, send us the report on the left.</p>
+            </details>
+            <details>
+              <summary>I want to unpair.</summary>
+              <p><em>Settings → Account → Unpair.</em> Either of you can do it. Your shared content stays available to your partner unless they also delete.</p>
+            </details>
+            <details>
+              <summary>How do I delete my account?</summary>
+              <p><em>Settings → Account → Delete account.</em> Permanent, immediate. We'll always do this manually for you too — write in.</p>
+            </details>
+            <details>
+              <summary>Where's the Android version?</summary>
+              <p>Not yet. Together is iOS-only for now. If both phones are iPhones, you're set.</p>
+            </details>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>© 2026 Together · Built for two.</div>
+    <div class="foot-links">
+      <a href="#/privacy">Privacy</a>
+      <a href="#/contact">Contact</a>
+      <a href="#/support">Support</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---------- Router ----------
+  const ROUTES = {
+    '/': 'route-home',
+    '/privacy': 'route-privacy',
+    '/contact': 'route-contact',
+    '/support': 'route-support'
+  };
+  const TITLES = {
+    '/': 'Together — built for two',
+    '/privacy': 'Privacy · Together',
+    '/contact': 'Contact · Together',
+    '/support': 'Support · Together'
+  };
+
+  function currentPath() {
+    const h = location.hash.replace(/^#/, '');
+    if (!h || h === '/') return '/';
+    return h.startsWith('/') ? h : '/' + h;
+  }
+
+  function render() {
+    const path = currentPath();
+    const targetId = ROUTES[path] || ROUTES['/'];
+    document.querySelectorAll('main.route').forEach(m => {
+      m.hidden = (m.id !== targetId);
+    });
+    document.title = TITLES[path] || TITLES['/'];
+    // nav active state
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.toggle('active', a.dataset.route === path);
+    });
+    // scroll to top of page on route change
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    // re-arm reveal
+    armReveal();
+  }
+
+  window.addEventListener('hashchange', render);
+
+  // ---------- Scroll reveal ----------
+  let io;
+  function armReveal() {
+    if (io) io.disconnect();
+    const els = document.querySelectorAll('main.route:not([hidden]) .reveal');
+    // immediately mark visible ones
+    els.forEach(el => el.classList.remove('in'));
+    io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  }
+
+  // ---------- Forms ----------
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  function showFormError(form, msg) {
+    let el = form.querySelector('.form-err');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'form-err';
+      el.style.cssText = 'color:#ff9bb4;font-size:13px;margin-bottom:14px;padding:10px 14px;border:1px solid rgba(255,100,130,0.35);border-radius:10px;background:rgba(255,100,130,0.06);';
+      form.querySelector('.submit-row').before(el);
+    }
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function wireForm(formId, sentId, endpoint) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    const sent = document.getElementById(sentId);
+    const submitBtn = form.querySelector('.submit');
+    const origLabel = submitBtn.innerHTML;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let ok = true;
+      form.querySelectorAll('input[required], textarea[required]').forEach(input => {
+        const errEl = form.querySelector(`.err[data-for="${input.id}"]`);
+        let bad = !input.value.trim();
+        if (!bad && input.type === 'email') bad = !validEmail(input.value.trim());
+        input.classList.toggle('invalid', bad);
+        if (errEl) errEl.classList.toggle('show', bad);
+        if (bad) ok = false;
+      });
+      if (!ok) {
+        const first = form.querySelector('.invalid');
+        if (first) first.focus();
+        return;
+      }
+
+      const prevErr = form.querySelector('.form-err');
+      if (prevErr) prevErr.style.display = 'none';
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+
+      const data = new FormData(form);
+      // include file attachment for support form if present
+      const fileInput = form.querySelector('#s-file');
+      if (fileInput && fileInput.files[0]) {
+        data.append('attachment', fileInput.files[0], fileInput.files[0].name);
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' }
+        });
+        if (res.ok) {
+          if (sent) {
+            sent.classList.add('show');
+            sent.scrollIntoView({ block: 'nearest' });
+          }
+          form.reset();
+          const dropEmpty = form.querySelector('#drop-empty');
+          const dropFilled = form.querySelector('#drop-filled');
+          if (dropEmpty && dropFilled) {
+            dropEmpty.style.display = '';
+            dropFilled.style.display = 'none';
+            dropFilled.textContent = '';
+          }
+        } else {
+          const json = await res.json().catch(() => ({}));
+          showFormError(form, json.error || 'Something went wrong — please try again or email us directly.');
+        }
+      } catch (_) {
+        showFormError(form, 'Could not send — check your connection and try again, or email us directly.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = origLabel;
+      }
+    });
+
+    // clear field error as user types
+    form.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('input', () => {
+        el.classList.remove('invalid');
+        const errEl = form.querySelector(`.err[data-for="${el.id}"]`);
+        if (errEl) errEl.classList.remove('show');
+      });
+    });
+  }
+
+  wireForm('contact-form', 'contact-sent', 'https://formspree.io/f/mdajagkb');
+  wireForm('support-form', 'support-sent', 'https://formspree.io/f/xykvkwzr');
+
+  // ---------- File drop ----------
+  (function() {
+    const drop = document.getElementById('drop');
+    const file = document.getElementById('s-file');
+    const empty = document.getElementById('drop-empty');
+    const filled = document.getElementById('drop-filled');
+    if (!drop || !file) return;
+
+    function set(f) {
+      if (!f) return;
+      empty.style.display = 'none';
+      filled.style.display = '';
+      filled.textContent = `Attached: ${f.name} (${Math.round(f.size/1024)} KB)`;
+    }
+    drop.addEventListener('click', () => file.click());
+    file.addEventListener('change', () => set(file.files[0]));
+    drop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      drop.style.borderColor = 'rgba(255, 122, 168, 0.6)';
+      drop.style.background = 'rgba(255, 122, 168, 0.05)';
+    });
+    drop.addEventListener('dragleave', () => {
+      drop.style.borderColor = '';
+      drop.style.background = '';
+    });
+    drop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      drop.style.borderColor = '';
+      drop.style.background = '';
+      if (e.dataTransfer.files.length) {
+        file.files = e.dataTransfer.files;
+        set(e.dataTransfer.files[0]);
+      }
+    });
+  })();
+
+  // ---------- TOC smooth scroll ----------
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    // ignore route hashes
+    if (href.startsWith('#/')) return;
+    if (href === '#') return;
+    const id = href.slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      e.preventDefault();
+      const top = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+
+  // ---------- Initial render ----------
+  if (!location.hash) location.hash = '#/';
+  render();
+</script>
+
+</body>
+</html>
